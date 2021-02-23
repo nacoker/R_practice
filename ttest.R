@@ -1,5 +1,7 @@
 #load necessary packages (ggplot,rmarkdown,readxl)
-library('rmarkdown');library('ggplot2');library('readxl')
-data<-read_excel("C:/Users/nc005/Desktop/ttest.xlsx",sheet="missing-dependent")
-ttest.frame<-as.data.frame(data)
-ggplot(ttest.frame,aes(ttest.frame$`1RM Pre`))+geom_histogram(binwidth=10)+theme_classic() #takes data of interest and generates histogram, adding classic theme
+library('rmarkdown');library('ggplot2');library('readxl');library(gridExtra)
+pre.data<-read_excel("C:/Users/ncoker/Desktop/t-test sample files.xlsx",sheet="missing-dependent")
+dependent<-as.data.frame(pre.data)
+pre<-qplot(dependent$'max-pre',geom="histogram",binwidth=10)+xlab('1RM (kg)')+ylab('Frequency')+theme_classic()
+post<-qplot(dependent$'max-post',geom="histogram",binwidth=10)+xlab('1RM (kg)')+ylab('Frequency')+theme_classic()
+prepost<-grid.arrange(pre,post,nrow=1)
