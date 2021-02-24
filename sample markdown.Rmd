@@ -29,7 +29,9 @@ head(dependent)
 
 To visualize the data, we can plot a histogram using the "qplot" function, with the 1RM in kilograms displayed on the x-axis and the frequency of occurrences of each value on the y-axis. This requires the 'ggplot2' package. The binwidth will set the limits of each tick along the x-axis, so may need to be adjusted to better fit your data. Below, you can see the histograms of both the pre and post data from the dependent data frame
 
-```{r histogram, echo=FALSE,warning=FALSE}
+
+```{r histogram,warning=FALSE}
+
 library(ggplot2)
 pre<-qplot(dependent$'max-pre',geom="histogram",binwidth=10)
 plot(pre)
@@ -37,7 +39,8 @@ post<-qplot(dependent$'max-post',geom="histogram",binwidth=10)
 plot(post)
 ```
 
-We can then use the "grid.arrange" function and some other built-ins to change the look of our plots:
+
+We can then use the "grid.arrange" and "labs" functions to change the look of our plots:
 
 ```{r cleanup,warning=FALSE}
 library(gridExtra)
@@ -45,6 +48,30 @@ pre<-pre+labs(title="Pre-training 1RM",x="One-repetition maximum (kg)",y="Freque
 post<-post+labs(title="Post-training 1RM",x="One-repetition maximum (kg)",y="Frequency")+theme_classic()
 prepost<-grid.arrange(pre,post,nrow=1)
 ```
+
+
+# Shapiro-Wilk test for Normality
+
+In addition to creating a histogram for visual inspection of the data, we can also statistically test the assumption of normality using the Shapiro-Wilk test:
+
+```{r Shapiro-Wilk,warning=FALSE}
+pre.norm<-shapiro.test(dependent$'max-pre')
+post.norm<-shapiro.test(dependent$'max-post')
+pre.norm
+post.norm
+```
+
+Based on these results and the histograms, we can assume that data are normally distributed, satisfying the primary assumption of a dependent t-test. 
+
+# Running the t-test
+
+Now that we have tested our assumptions, we are ready to run the t-test. We can do this using the "t.test" function, specifying the parameters of our model. In this example, I chose to run a one-tailed test because we would expect that the majority of participants respond positively to a resistance training intervention for measures of maximal strength. This is done by specifying "alternative=less" because we assume that the post value is higher than the pre value. I also set var.equal=TRUE because equal variance is assumed in a paired samples test, and paired=TRUE to specify a paired samples test. 
+```{r t-test, warning=FALSE}
+result<-t.test(dependent$'max-pre',dependent$'max-post',data=my_data,alternative="less",var.equal=TRUE,paired=TRUE)
+result
+```
+
+As we can see here, our p-value is 0.04259, indicating that there was a significant increase in 1RM strength over the course of the training intervention. 
 
 
 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
