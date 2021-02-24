@@ -29,13 +29,16 @@ head(dependent)
 
 To visualize the data, we can plot a histogram using the "qplot" function, with the 1RM in kilograms displayed on the x-axis and the frequency of occurrences of each value on the y-axis. This requires the 'ggplot2' package. The binwidth will set the limits of each tick along the x-axis, so may need to be adjusted to better fit your data. Below, you can see the histograms of both the pre and post data from the dependent data frame
 
+
 ```{r histogram,warning=FALSE}
+
 library(ggplot2)
 pre<-qplot(dependent$'max-pre',geom="histogram",binwidth=10)
 plot(pre)
 post<-qplot(dependent$'max-post',geom="histogram",binwidth=10)
 plot(post)
 ```
+
 
 We can then use the "grid.arrange" and "labs" functions to change the look of our plots:
 
@@ -45,6 +48,7 @@ pre<-pre+labs(title="Pre-training 1RM",x="One-repetition maximum (kg)",y="Freque
 post<-post+labs(title="Post-training 1RM",x="One-repetition maximum (kg)",y="Frequency")+theme_classic()
 prepost<-grid.arrange(pre,post,nrow=1)
 ```
+
 
 # Shapiro-Wilk test for Normality
 
@@ -68,5 +72,6 @@ result
 ```
 
 As we can see here, our p-value is 0.04259, indicating that there was a significant increase in 1RM strength over the course of the training intervention. 
+
 
 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
