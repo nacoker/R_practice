@@ -1,0 +1,50 @@
+---
+title: "dependent t-test"
+author: "nacoker"
+date: "2/23/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Importing an Excel data file from the desktop
+To import the data file, the readxl package must be loaded. Start by specifying the file path in quotes. If the spreadsheet has multiple pages, you can specify the name of the specific sheet you want to read in using the "sheet" parameter. 
+
+```{r dataread,warning=FALSE}
+library(readxl)
+pre.data<-read_excel("C:/Users/ncoker/Desktop/t-test sample files.xlsx",sheet="missing-dependent") 
+dependent<-as.data.frame(pre.data) 
+```
+
+Using the "head" function displays the headers as well as the first six rows of data, as you can see below.Any missing values are listed as "NA".
+
+```{r data display}
+head(dependent)
+```
+
+
+## Creating histograms
+
+To visualize the data, we can plot a histogram using the "qplot" function, with the 1RM in kilograms displayed on the x-axis and the frequency of occurrences of each value on the y-axis. This requires the 'ggplot2' package. The binwidth will set the limits of each tick along the x-axis, so may need to be adjusted to better fit your data. Below, you can see the histograms of both the pre and post data from the dependent data frame
+
+```{r histogram, echo=FALSE,warning=FALSE}
+library(ggplot2)
+pre<-qplot(dependent$'max-pre',geom="histogram",binwidth=10)
+plot(pre)
+post<-qplot(dependent$'max-post',geom="histogram",binwidth=10)
+plot(post)
+```
+
+We can then use the "grid.arrange" function and some other built-ins to change the look of our plots:
+
+```{r cleanup,warning=FALSE}
+library(gridExtra)
+pre<-pre+labs(title="Pre-training 1RM",x="One-repetition maximum (kg)",y="Frequency")+theme_classic()
+post<-post+labs(title="Post-training 1RM",x="One-repetition maximum (kg)",y="Frequency")+theme_classic()
+prepost<-grid.arrange(pre,post,nrow=1)
+```
+
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
